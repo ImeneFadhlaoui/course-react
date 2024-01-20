@@ -1,31 +1,17 @@
 import Counter from "./Counter";
 import Product from "./Product";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { v4 as uuid } from "uuid";
+import { ProductContext } from "../contexts/ProductContext";
 function Products() {
+  const { products, addProduct } = useContext(ProductContext);
   const [title, setTitle] = useState("");
   const [price, setPrice] = useState("");
 
   const [message, setMessage] = useState("");
 
   let showList = true;
-  const [products, setProducts] = useState([
-    {
-      id: 1,
-      label: "Iphone 14",
-      price: 3000,
-    },
-    {
-      id: 2,
-      label: "Samsung",
-      price: 2000,
-    },
-    {
-      id: 3,
-      label: "Redmi",
-      price: 2500,
-    },
-  ]);
+
   const titleInput = (e) => {
     if (e.target.value === "") {
       setMessage("Title is Required !");
@@ -48,17 +34,10 @@ function Products() {
       label: title,
       price,
     };
-    setProducts([...products, myProduct]);
+    addProduct(myProduct);
+
     setTitle("");
     setPrice(0);
-  };
-
-  const deleteProduct = (id) => {
-    let myList = products.filter((product) => product.id !== id);
-    setProducts((prev) => {
-      console.log(prev);
-      return myList;
-    });
   };
 
   return (
@@ -73,9 +52,7 @@ function Products() {
             type="text"
             className="form-control"
           />
-          {message && (
-            <div className=" alert alert-danger">{message}</div>
-          )}
+          {message && <div className=" alert alert-danger">{message}</div>}
         </div>
 
         <div className="form-group my-2">
@@ -96,7 +73,7 @@ function Products() {
         <div>
           {products.map((product, index) => (
             <div key={index}>
-              <Product id={product.id} onDeleteProduct={deleteProduct}>
+              <Product id={product.id}>
                 <div className="card-body">
                   <h4 className="card-title">{product.label}</h4>
                   <p className="card-text"></p>
